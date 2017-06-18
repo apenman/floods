@@ -49,8 +49,7 @@ scene.add( object );
     // plane.position.set( Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5 ).normalize();
     // plane.position.multiplyScalar( Math.random() * 400 );
     // plane.scale.x = plane.scale.y = plane.scale.z = Math.random() * 50;
-    loadTextures(plane);
-    object.add(plane);
+    loadTextures();
 
     // postprocessing
     composer = new THREE.EffectComposer( renderer );
@@ -86,43 +85,24 @@ composer.render();
 //renderer.render(scene, camera);
 }
 
-function loadTextures(plane) {
+function loadTextures() {
   var loader = new THREE.TextureLoader();
-  for(var i = 1; i < 5; i++) {
-    loader.load(i+'.jpg',
+  var doneCount = 0;
+  for(var i = 1; i < 12; i++) {
+    console.log("LOADED + " + i);
+    loader.load('assets/' + i + '.jpg',
      function(texture){
-      materials.push(
-        new THREE.MeshBasicMaterial( {
-          map: texture
-        })
-      );
-       console.log("GOT SPRITE " + i);
+       material = new THREE.MeshBasicMaterial( {
+         map: texture
+       } );
+       materials.push(material);
+       if(++doneCount == 11){
+         console.log("DONE");
+         plane.material = material;
+         object.add(plane);
+       }
      });
   }
-
-  // load a resource
-  loader.load(
-    // resource URL
-    'uh.png',
-    // Function when resource is loaded
-    function ( texture ) {
-      console.log("GOT IT")
-      // do something with the texture
-      material = new THREE.MeshBasicMaterial( {
-        map: texture
-      } );
-      materials.push(material);
-      plane.material = material;
-    },
-    // Function called when download progresses
-    function ( xhr ) {
-      console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
-    },
-    // Function called when download errors
-    function ( xhr ) {
-      console.log( 'An error happened' );
-    }
-  );
 }
 
 function getRandomInt(min, max) {
@@ -133,7 +113,7 @@ function getRandomInt(min, max) {
 
 function tester() {
   console.log("TIME IS UP");
-  var test = getRandomInt(1,5);
+  var test = getRandomInt(1,11);
   plane.material = materials[test];
 }
 
