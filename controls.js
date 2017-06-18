@@ -13,16 +13,6 @@ init();
 animate();
 
 function init() {
-  var text2 = document.createElement('div');
-  text2.style.position = 'absolute';
-  //text2.style.zIndex = 1;    // if you still don't see the label, try uncommenting this
-  text2.style.width = 100;
-  text2.style.height = 100;
-  text2.style.color = "white";
-  text2.innerHTML = "hi there!";
-  text2.style.top = 200 + 'px';
-  text2.style.left = 200 + 'px';
-  document.body.appendChild(text2);
   var ctx = new AudioContext();
   var audioSrc = ctx.createMediaElementSource(audio);
   analyser = ctx.createAnalyser();
@@ -78,7 +68,6 @@ function loadTextures() {
   var loader = new THREE.TextureLoader();
   var doneCount = 0;
   for(var i = 1; i < 12; i++) {
-    console.log("LOADED + " + i);
     loader.load('assets/' + i + '.jpg',
      function(texture){
        material = new THREE.MeshBasicMaterial( {
@@ -86,7 +75,6 @@ function loadTextures() {
        } );
        materials.push(material);
        if(++doneCount == 11){
-         console.log("DONE");
          plane.material = material;
          object.add(plane);
        }
@@ -101,7 +89,6 @@ function getRandomInt(min, max) {
 }
 
 function tester() {
-  console.log("TIME IS UP");
   var test = getRandomInt(1,11);
   plane.material = materials[test];
 }
