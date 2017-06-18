@@ -4,11 +4,12 @@
 		<meta charset=utf-8>
 		<title>My first three.js app</title>
 		<style>
-			body { margin: 0; }
+			body { margin: 0;width: 100%; height: 100% }
 			canvas { width: 100%; height: 100% }
 		</style>
 	</head>
 	<body>
+		<audio id="music" src="01.mp3"></audio>
 		<script src="libs/three.js"></script>
     <script src="libs/EffectComposer.js"></script>
     <script src="libs/ShaderPass.js"></script>
@@ -101,14 +102,25 @@
 
 	var camera, scene, renderer, composer;
 var object, light;
-var glitchPass;
+var glitchPass, audio, analyser,frequencyData;
 init();
 animate();
+audio.play();
 function updateOptions() {
 	var wildGlitch = document.getElementById('wildGlitch');
 	glitchPass.goWild=false;
 }
 function init() {
+	var ctx = new AudioContext();
+  audio = document.getElementById('music');
+  var audioSrc = ctx.createMediaElementSource(audio);
+  analyser = ctx.createAnalyser();
+
+	audioSrc.connect(analyser);
+ audioSrc.connect(ctx.destination);
+ // frequencyBinCount tells you how many values you'll receive from the analyser
+ frequencyData = new Uint8Array(analyser.frequencyBinCount);
+
 	renderer = new THREE.WebGLRenderer();
 	renderer.setPixelRatio( window.devicePixelRatio );
 	renderer.setSize( window.innerWidth, window.innerHeight );
@@ -121,7 +133,7 @@ function init() {
 	object = new THREE.Object3D();
 	scene.add( object );
 
-			var geometry2 = new THREE.PlaneGeometry( 100, 100, 32 );
+			var geometry2 = new THREE.PlaneGeometry( 80, 50, 0 );
 			var material2 = new THREE.MeshBasicMaterial({color: 0x2194ce});
 			var plane = new THREE.Mesh( geometry2, material2 );
 			// plane.position.set( Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5 ).normalize();
@@ -158,8 +170,9 @@ function init() {
 	// postprocessing
 	composer = new THREE.EffectComposer( renderer );
 	composer.addPass( new THREE.RenderPass( scene, camera ) );
-	glitchPass = new THREE.GlitchPass();
+	glitchPass = new THREE.GlitchPass(1000);
 	glitchPass.renderToScreen = true;
+	glitchPass.goWild = true;
 	composer.addPass( glitchPass );
 	//
 	window.addEventListener( 'resize', onWindowResize, false );
@@ -172,6 +185,7 @@ function onWindowResize() {
 	composer.setSize( window.innerWidth, window.innerHeight );
 }
 function animate() {
+	analyser.getByteFrequencyData(frequencyData);
 	requestAnimationFrame( animate );
 	var time = Date.now();
 	// object.rotation.x += 0.005;
