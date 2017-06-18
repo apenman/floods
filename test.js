@@ -1,5 +1,6 @@
 var camera, scene, renderer, composer;
 var object, light;
+var plane;
 var glitchPass, audio, analyser,frequencyData;
 var materials =  [];
 init();
@@ -44,49 +45,20 @@ scene.add( object );
 
     var geometry2 = new THREE.PlaneGeometry( 80, 50, 0 );
     var material2 = new THREE.MeshBasicMaterial({color: 0x2194ce});
-    var plane = new THREE.Mesh( geometry2, material2 );
+    plane = new THREE.Mesh( geometry2, material2 );
     // plane.position.set( Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5 ).normalize();
     // plane.position.multiplyScalar( Math.random() * 400 );
     // plane.scale.x = plane.scale.y = plane.scale.z = Math.random() * 50;
+    loadTextures(plane);
     object.add(plane);
 
-
-        var loader = new THREE.TextureLoader();
-        loader.load('sprite.png',
-         function(texture){
-           material2 = texture;
-           console.log("GOT SPRITE")
-         });
-        // load a resource
-        loader.load(
-          // resource URL
-          'uh.png',
-          // Function when resource is loaded
-          function ( texture ) {
-            console.log("GOT IT")
-            // do something with the texture
-            material = new THREE.MeshBasicMaterial( {
-              map: texture
-            } );
-            plane.material = material;
-          },
-          // Function called when download progresses
-          function ( xhr ) {
-            console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
-          },
-          // Function called when download errors
-          function ( xhr ) {
-            console.log( 'An error happened' );
-          }
-        );
-
-// postprocessing
-composer = new THREE.EffectComposer( renderer );
-composer.addPass( new THREE.RenderPass( scene, camera ) );
-glitchPass = new THREE.GlitchPass(1000);
-glitchPass.renderToScreen = true;
-glitchPass.goWild = true;
-composer.addPass( glitchPass );
+    // postprocessing
+    composer = new THREE.EffectComposer( renderer );
+    composer.addPass( new THREE.RenderPass( scene, camera ) );
+    glitchPass = new THREE.GlitchPass(1000);
+    glitchPass.renderToScreen = true;
+    glitchPass.goWild = true;
+    composer.addPass( glitchPass );
 //
 window.addEventListener( 'resize', onWindowResize, false );
 updateOptions();
@@ -94,7 +66,7 @@ updateOptions();
 document.addEventListener('keydown',onDocumentKeyDown,false);
 function onDocumentKeyDown(event){
   console.log("key");
-  plane.material = material2;
+  plane.material = materials[0];
 }
 }
 
@@ -113,3 +85,56 @@ var time = Date.now();
 composer.render();
 //renderer.render(scene, camera);
 }
+
+function loadTextures(plane) {
+  var loader = new THREE.TextureLoader();
+  for(var i = 1; i < 5; i++) {
+    loader.load(i+'.jpg',
+     function(texture){
+      materials.push(
+        new THREE.MeshBasicMaterial( {
+          map: texture
+        })
+      );
+       console.log("GOT SPRITE " + i);
+     });
+  }
+
+  // load a resource
+  loader.load(
+    // resource URL
+    'uh.png',
+    // Function when resource is loaded
+    function ( texture ) {
+      console.log("GOT IT")
+      // do something with the texture
+      material = new THREE.MeshBasicMaterial( {
+        map: texture
+      } );
+      materials.push(material);
+      plane.material = material;
+    },
+    // Function called when download progresses
+    function ( xhr ) {
+      console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+    },
+    // Function called when download errors
+    function ( xhr ) {
+      console.log( 'An error happened' );
+    }
+  );
+}
+
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
+}
+
+function tester() {
+  console.log("TIME IS UP");
+  var test = getRandomInt(1,5);
+  plane.material = materials[test];
+}
+
+setInterval(tester, Math.random() * (7500 - 5000) + 5000);
