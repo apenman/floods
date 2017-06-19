@@ -9,7 +9,12 @@ canvas {
 }
 
 .white, .white a {
-  color: #fff;
+  color: white;
+}
+
+/* mouse over link */
+a:hover {
+    color: gray;
 }
 
 .container {
