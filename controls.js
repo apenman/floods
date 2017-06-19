@@ -34,7 +34,7 @@ function init() {
   object = new THREE.Object3D();
   scene.add( object );
 
-  var geometry2 = new THREE.PlaneGeometry( 80, 50, 0 );
+  var geometry2 = new THREE.PlaneGeometry( 100, 60, 0 );
   var material2 = new THREE.MeshBasicMaterial({color: 0x2194ce});
   plane = new THREE.Mesh( geometry2, material2 );
   // plane.position.set( Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5 ).normalize();

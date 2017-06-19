@@ -1,0 +1,38 @@
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
+canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.white, .white a {
+  color: #fff;
+}
+
+.container {
+  font-family: 'Roboto', sans-serif;
+  letter-spacing: 10px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -100px;
+  margin-left: -118px;
+  width: 236px;
+  height: 100px;
+  text-align: center;
+}
+
+.floods {
+  font-family: 'Roboto', sans-serif;
+  font-size: 300%;
+  letter-spacing: 10px;
+}
+
+.social {
+  font-family: 'Roboto', sans-serif;
+  font-size: 200%;
+  letter-spacing: 10px;
+}
